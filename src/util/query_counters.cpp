@@ -24,8 +24,9 @@
 namespace hpx { namespace util
 {
     query_counters::query_counters(std::vector<std::string> const& names,
-            boost::int64_t interval, std::string const& dest, std::string const& form)
-      : names_(names), destination_(dest), format_(form),
+            boost::int64_t interval, std::string const& dest, std::string const& form,
+            std::string const& shortnames)
+      : names_(names), destination_(dest), format_(form), shortnames_(shortnames),
         timer_(boost::bind(&query_counters::evaluate, this_()),
             boost::bind(&query_counters::terminate, this_()),
             interval*1000, "query_counters", true)
@@ -374,6 +375,13 @@ namespace hpx { namespace util
                     output << ",";
             }
             output << "\n";
+        }
+
+        if (format_ == "csv-short") {
+            output << shortnames_ << "\n";
+        }
+
+        if (format_ == "csv" || format_ == "csv-short"){
             for (std::size_t i = 0; i < values.size(); ++i)
             {
                 print_value_csv(output, values[i].get());
@@ -382,6 +390,7 @@ namespace hpx { namespace util
             }
             output << "\n";
         }
+        
         else {
             for (std::size_t i = 0; i < values.size(); ++i)
                 print_value(output, names_[i], values[i].get(), uoms_[i]);

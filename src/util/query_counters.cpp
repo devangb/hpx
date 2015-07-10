@@ -150,6 +150,12 @@ namespace hpx { namespace util
     }
 
     template <typename Stream>
+    void query_counters::print_shortnames(Stream &out, std::string const& shortnames)
+    {
+        out << shortnames << "\n";
+    }
+
+    template <typename Stream>
     void query_counters::print_value_csv(Stream& out,
         performance_counters::counter_value const& value)
     {
@@ -378,7 +384,7 @@ namespace hpx { namespace util
         }
 
         if (format_ == "csv-short") {
-            output << shortnames_ << "\n";
+            print_shortnames(output, shortnames_);
         }
 
         if (format_ == "csv" || format_ == "csv-short"){
@@ -390,7 +396,7 @@ namespace hpx { namespace util
             }
             output << "\n";
         }
-        
+
         else {
             for (std::size_t i = 0; i < values.size(); ++i)
                 print_value(output, names_[i], values[i].get(), uoms_[i]);

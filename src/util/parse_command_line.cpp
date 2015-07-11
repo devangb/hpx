@@ -523,6 +523,10 @@ namespace hpx { namespace util
                 ("hpx:print-counter-format", value<std::string>(),
                   "print the performance counter(s) specified with --hpx:print-counter "
                   "in a given format (default: normal)")
+                ("hpx:csv-shortnames", value<std::string>(),
+                    "print the csv with the shortnames, "
+                    "use the comma seperated shortnames in sequence same as "
+                    "--hpx:print-counter")
             ;
 
             hidden_options.add_options()

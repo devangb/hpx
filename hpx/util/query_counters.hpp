@@ -57,7 +57,7 @@ namespace hpx { namespace util
             std::string const& name);
 
         template <typename Stream>
-        void query_counters::print_shortnames(Stream &out, 
+        void print_shortnames(Stream &out, 
             std::string const& shortnames);
 
         template <typename Stream>

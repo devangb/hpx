@@ -414,8 +414,7 @@ namespace hpx { namespace util
             csv_header_ = false;
         }
 
-        if (format_ == "csv" || format_ == "csv-short" || format_ == "csv-timestamp"
-            || format_ == "csv-short-timestamp") {
+        if (format_ == "csv" || format_ == "csv-short" || format_ == "csv-timestamp" || format_ == "csv-short-timestamp") {
             for (std::size_t i = 0; i < values.size(); ++i)
             {
                 print_value_csv(output, values[i].get(), timestamp_);

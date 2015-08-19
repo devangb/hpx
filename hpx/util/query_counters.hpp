@@ -30,7 +30,7 @@ namespace hpx { namespace util
         query_counters(std::vector<std::string> const& names,
             boost::int64_t interval, std::string const& dest,
             std::string const& form, std::vector<std::string> const& shortnames,
-            bool csv_header);
+            bool csv_header, bool timestamps);
 
         void start();
         void stop_evaluating_counters();
@@ -55,15 +55,15 @@ namespace hpx { namespace util
 
         template <typename Stream>
         void print_name_csv(Stream& out,
-            std::string const& name);
+            std::string const& name, bool timestamp);
 
         template <typename Stream>
         void print_value_csv(Stream& out,
-            performance_counters::counter_value const& value);
+            performance_counters::counter_value const& value, bool timestamp);
 
         template <typename Stream>
         void print_name_csv_short(Stream& out,
-            std::string const& name);
+            std::string const& name, bool timestamp);
 
     private:
         typedef lcos::local::mutex mutex_type;
@@ -78,6 +78,7 @@ namespace hpx { namespace util
         std::string format_;
         std::vector<std::string> counter_shortnames_;
         bool csv_header_;
+        bool timestamp_;
 
         interval_timer timer_;
     };

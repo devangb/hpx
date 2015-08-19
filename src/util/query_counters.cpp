@@ -26,9 +26,9 @@ namespace hpx { namespace util
 {
     query_counters::query_counters(std::vector<std::string> const& names,
             boost::int64_t interval, std::string const& dest, std::string const& form,
-            std::vector<std::string> const& shortnames, bool csv_header)
+            std::vector<std::string> const& shortnames, bool csv_header, bool timestamps)
       : names_(names), destination_(dest), format_(form),
-            counter_shortnames_(shortnames), csv_header_(csv_header),
+            counter_shortnames_(shortnames), csv_header_(csv_header), timestamp_(timestamps),
         timer_(boost::bind(&query_counters::evaluate, this_()),
             boost::bind(&query_counters::terminate, this_()),
             interval*1000, "query_counters", true)
@@ -147,29 +147,44 @@ namespace hpx { namespace util
     }
 
     template <typename Stream>
-    void query_counters::print_name_csv(Stream& out, std::string const& name)
+    void query_counters::print_name_csv(Stream& out, std::string const& name,
+        bool timestamp)
     {
         out << performance_counters::remove_counter_prefix(name);
+        if(timestamp) {
+            out << ",elapsed_time";
+        }
     }
 
     template <typename Stream>
     void query_counters::print_value_csv(Stream& out,
-        performance_counters::counter_value const& value)
+        performance_counters::counter_value const& value, bool timestamp)
     {
         error_code ec(lightweight);
         double val = value.get_value<double>(ec);
         if(!ec) {
             out << val;
+            if(timestamp) {
+                double elapsed = static_cast<double>(value.time_) * 1e-9;
+                out << "," << boost::str(boost::format("%.6f") % elapsed);
+            }
         }
         else {
             out << "invalid";
+            if(timestamp) {
+                out << ",invalid";
+            }
         }
     }
 
     template <typename Stream>
-    void query_counters::print_name_csv_short(Stream& out, std::string const& name)
+    void query_counters::print_name_csv_short(Stream& out, std::string const& name,
+        bool timestamp)
     {
         out << name;
+        if(timestamp) {
+            out << ",elapsed_time"
+        }
     }
 
     bool query_counters::evaluate()
@@ -377,20 +392,20 @@ namespace hpx { namespace util
 
         // Output the performance counter value.
         if (csv_header_ == true) {
-            if(format_ == "csv") {
+            if(format_ == "csv" || format_ == "csv-timestamp") {
                 for (std::size_t i = 0; i < names_.size(); ++i)
                 {
-                    print_name_csv(output, names_[i]);
+                    print_name_csv(output, names_[i], timestamp_);
                     if (i != names_.size()-1)
                         output << ",";
                 }
                 output << "\n";
             }
 
-            if(format_ == "csv-short") {
+            if(format_ == "csv-short" || format_ == "csv-short-timestamp") {
                 for (std::size_t i = 0; i < counter_shortnames_.size(); ++i)
                 {
-                    print_name_csv_short(output, counter_shortnames_[i]);
+                    print_name_csv_short(output, counter_shortnames_[i], timestamp_);
                     if (i != counter_shortnames_.size()-1)
                         output << ",";
                 }
@@ -399,10 +414,11 @@ namespace hpx { namespace util
             csv_header_ = false;
         }
 
-        if (format_ == "csv" || format_ == "csv-short") {
+        if (format_ == "csv" || format_ == "csv-short" || format_ == "csv-timestamp"
+            || format_ == "csv-short-timestamp") {
             for (std::size_t i = 0; i < values.size(); ++i)
             {
-                print_value_csv(output, values[i].get());
+                print_value_csv(output, values[i].get(), timestamp_);
                 if (i != values.size()-1)
                     output << ",";
             }

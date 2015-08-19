@@ -355,6 +355,7 @@ namespace hpx
                 rt.add_startup_function(&list_component_types);
             }
 
+            // Print counter values
             if (vm.count("hpx:print-counter")) {
                 std::size_t interval = 0;
                 if (vm.count("hpx:print-counter-interval"))
@@ -363,10 +364,13 @@ namespace hpx
                 std::vector<std::string> counters =
                     vm["hpx:print-counter"].as<std::vector<std::string> >();
 
+                // Print counter values in specific format
                 std::vector<std::string> counter_shortnames;
                 std::string counter_format("normal");
+                bool timestamp = false;
                 if (vm.count("hpx:print-counter-format")) {
                     counter_format = vm["hpx:print-counter-format"].as<std::string>();
+                    // Use shortnames provided as header for CSV
                     if (counter_format == "csv-short"){
                         for (std::size_t i=0; i< counters.size() ; ++i) {
                             std::vector<std::string> entry;
@@ -380,12 +384,20 @@ namespace hpx
                             counters[i] = entry[1];
                         }
                     }
+
+                    // Print timestamps with counter values in CSV formats
+                    if ( counter_format = "csv-timestamp" || counter_format = "csv-short-timestamp")
+                    {
+                        timestamp = true;
+                    }
                 }
 
+                // No header printing in CSV format
                 bool csv_header = true;
                 if(vm.count("hpx:no-csv-header"))
                     csv_header = false;
 
+                // Print counter output to particular destination
                 std::string destination("cout");
                 if (vm.count("hpx:print-counter-destination"))
                     destination = vm["hpx:print-counter-destination"].as<std::string>();
@@ -395,7 +407,7 @@ namespace hpx
                 boost::shared_ptr<util::query_counters> qc =
                     boost::make_shared<util::query_counters>(
                         boost::ref(counters), interval, destination, counter_format,
-                        counter_shortnames, csv_header);
+                        counter_shortnames, csv_header, timestamp);
 
                 // schedule to run at shutdown
                 rt.add_pre_shutdown_function(

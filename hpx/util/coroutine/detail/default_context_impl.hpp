@@ -68,7 +68,7 @@
        A ContextImpl is an initialized ContextImplBase.
 
      - ContextImplBase is Copyable. A copy of a ContextImplBase holds
-       The same informations as the original. Once a ContextImplBase
+       The same information as the original. Once a ContextImplBase
        is used as an argument to swap_context, all its copies become stale.
        (that is, only one copy of ContextImplBase can be used).
        A ContextImpl cannot be sliced by copying it to a ContextImplBase.
@@ -116,7 +116,8 @@ namespace hpx { namespace util { namespace coroutines { namespace detail
 #error Boost.Context is available only with Boost V1.51 or later
 #endif
 
-#elif (defined(__linux) || defined(linux) || defined(__linux__)) && !defined(__bgq__) && !defined(__powerpc__)
+#elif (defined(__linux) || defined(linux) || defined(__linux__)) \
+       && !defined(__bgq__) && !defined(__powerpc__)
 
 #include <hpx/util/coroutine/detail/context_linux_x86.hpp>
 namespace hpx { namespace util { namespace coroutines { namespace detail

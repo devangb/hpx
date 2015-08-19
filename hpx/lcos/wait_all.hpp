@@ -175,7 +175,7 @@ namespace hpx { namespace lcos
             BOOST_FORCEINLINE
             void do_await(TupleIter&&, boost::mpl::true_)
             {
-                this->set_result(util::unused);     // simply make ourself ready
+                this->set_value(util::unused);     // simply make ourself ready
             }
 
             // Current element is a range (vector) of futures
@@ -292,7 +292,8 @@ namespace hpx { namespace lcos
 
                 typedef typename detail::is_future_or_shared_state<future_type>::type
                     is_future;
-                typedef typename detail::is_future_or_shared_state_range<future_type>::type
+                typedef typename detail::is_future_or_shared_state_range<future_type>
+                      ::type
                     is_range;
 
                 await_next(std::forward<TupleIter>(iter), is_future(), is_range());

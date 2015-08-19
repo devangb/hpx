@@ -226,11 +226,13 @@ namespace hpx
 
         virtual util::unique_id_ranges& get_id_pool() = 0;
 
-        virtual void add_pre_startup_function(util::function_nonser<void()> const& f) = 0;
+        virtual void add_pre_startup_function(util::function_nonser<void()>
+            const& f) = 0;
 
         virtual void add_startup_function(util::function_nonser<void()> const& f) = 0;
 
-        virtual void add_pre_shutdown_function(util::function_nonser<void()> const& f) = 0;
+        virtual void add_pre_shutdown_function(util::function_nonser<void()>
+            const& f) = 0;
 
         virtual void add_shutdown_function(util::function_nonser<void()> const& f) = 0;
 
@@ -293,6 +295,12 @@ namespace hpx
         ///          succeeded or not.
         ///
         virtual bool unregister_thread() = 0;
+
+        /// Generate a new notification policy instance for the given thread
+        /// name prefix
+        typedef threads::policies::callback_notifier notification_policy_type;
+        virtual notification_policy_type
+            get_notification_policy(char const* prefix) = 0;
 
         /// This function creates anew base_lco_factory (if none is available
         /// for the given type yet), registers this factory with the

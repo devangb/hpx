@@ -425,10 +425,10 @@ namespace hpx { namespace parallel { HPX_INLINE_NAMESPACE(v2)
 
         if (t == typeid(parallel_task_execution_policy))
         {
-            parallel_task_execution_policy const& t =
+            parallel_task_execution_policy const& task_policy =
                 *policy.get<parallel_task_execution_policy>();
             return define_task_block(
-                par(t.get_chunk_size()), std::forward<F>(f));
+                par.with(task_policy.parameters()), std::forward<F>(f));
         }
 
         if (t == typeid(parallel_vector_execution_policy))
@@ -463,7 +463,8 @@ namespace hpx { namespace parallel { HPX_INLINE_NAMESPACE(v2)
     /// \throws An \a exception_list, as specified in Exception Handling.
     ///
     /// Postcondition: All tasks spawned from \a f have finished execution.
-    ///                A call to \a define_task_block_restore_thread always returns on the
+    ///                A call to \a define_task_block_restore_thread always
+    ///                returns on the
     ///                same thread as that on which it was called.
     ///
     /// \note It is expected (but not mandated) that f will (directly or
@@ -477,7 +478,8 @@ namespace hpx { namespace parallel { HPX_INLINE_NAMESPACE(v2)
 
         // By design we always return on the same (HPX-) thread as we started
         // executing define_task_block_restore_thread.
-        define_task_block(std::forward<ExPolicy>(policy), std::forward<F>(f));
+        return define_task_block(std::forward<ExPolicy>(policy),
+            std::forward<F>(f));
     }
 
     /// Constructs a \a task_block, tr, and invokes the expression
@@ -494,7 +496,8 @@ namespace hpx { namespace parallel { HPX_INLINE_NAMESPACE(v2)
     /// \throws An \a exception_list, as specified in Exception Handling.
     ///
     /// Postcondition: All tasks spawned from \a f have finished execution.
-    ///                A call to \a define_task_block_restore_thread always returns on the
+    ///                A call to \a define_task_block_restore_thread always
+    ///                returns on the
     ///                same thread as that on which it was called.
     ///
     /// \note It is expected (but not mandated) that f will (directly or

@@ -321,8 +321,10 @@ struct stepper_server : hpx::components::simple_component_base<stepper_server>
     stepper_server() {}
 
     stepper_server(std::size_t nl)
-      : left_(hpx::find_id_from_basename(stepper_basename, idx(hpx::get_locality_id(), -1, nl))),
-        right_(hpx::find_id_from_basename(stepper_basename, idx(hpx::get_locality_id(), +1, nl))),
+      : left_(hpx::find_id_from_basename
+          (stepper_basename, idx(hpx::get_locality_id(), -1, nl))),
+        right_(hpx::find_id_from_basename
+            (stepper_basename, idx(hpx::get_locality_id(), +1, nl))),
         U_(2)
     {
     }
@@ -411,9 +413,11 @@ struct stepper : hpx::components::client_base<stepper, stepper_server>
 
     // construct new instances/wrap existing steppers from other localities
     stepper()
-      : base_type(hpx::new_<stepper_server>(hpx::find_here(), hpx::get_num_localities_sync()))
+      : base_type(hpx::new_<stepper_server>
+          (hpx::find_here(), hpx::get_num_localities_sync()))
     {
-        hpx::register_id_with_basename(stepper_basename, get_id(), hpx::get_locality_id());
+        hpx::register_id_with_basename
+            (stepper_basename, get_id(), hpx::get_locality_id());
     }
 
     stepper(hpx::future<hpx::id_type> && id)
@@ -607,9 +611,9 @@ int hpx_main(boost::program_options::variables_map& vm)
             for (std::size_t i = 0; i != nl; ++i)
             {
                 stepper_server::space const& s = solution[i];
-                for (std::size_t j = 0; j != np; ++j)
+                for (std::size_t j = 0; j != s.size(); ++j)
                 {
-                    std::cout << "U[" << i*np + j << "] = "
+                    std::cout << "U[" << i*(s.size()) + j << "] = "
                         << s[j].get_data(partition_server::middle_partition).get()
                         << std::endl;
                 }

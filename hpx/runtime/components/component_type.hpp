@@ -7,7 +7,7 @@
 #if !defined(HPX_COMPONENT_COMPONENT_TYPE_MAR_26_2008_1058AM)
 #define HPX_COMPONENT_COMPONENT_TYPE_MAR_26_2008_1058AM
 
-#include <hpx/hpx_fwd.hpp>
+#include <hpx/config.hpp>
 #include <hpx/exception.hpp>
 #include <hpx/traits/component_type_database.hpp>
 #include <hpx/util/assert.hpp>
@@ -61,8 +61,9 @@ namespace hpx { namespace components
         component_type rhs_base = get_base_type(rhs);
 
         // special case for lco's
-        if ((lhs_base == component_base_lco && rhs_base == component_base_lco_with_value) ||
-            (rhs_base == component_base_lco && lhs_base == component_base_lco_with_value))
+        if ((lhs_base == component_base_lco && rhs_base == component_base_lco_with_value)
+            || (rhs_base == component_base_lco && lhs_base ==
+                component_base_lco_with_value))
         {
             return true;
         }

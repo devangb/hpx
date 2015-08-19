@@ -13,7 +13,6 @@
 #include <hpx/runtime/threads/thread_data.hpp>
 #include <hpx/util/logging.hpp>
 #include <hpx/lcos/barrier.hpp>
-#include <hpx/lcos/detail/full_empty_entry.hpp>
 #include <hpx/runtime/agas/interface.hpp>
 
 #define HPX_USE_FAST_BOOTSTRAP_SYNCHRONIZATION
@@ -118,10 +117,6 @@ inline void register_counter_types()
      applier::get_applier().get_parcel_handler().register_counter_types();
      LBT_(info) << "(2nd stage) pre_main: registered parcelset performance "
                    "counter types";
-
-     hpx::lcos::detail::register_counter_types();
-     LBT_(info) << "(2nd stage) pre_main: registered full_empty_entry "
-                   "performance counter types";
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -192,7 +187,8 @@ int pre_main(runtime_mode mode)
                 startup_barrier = create_barrier(num_localities, startup_barrier_name);
             }
 
-            LBT_(info) << "(2nd stage) pre_main: created 2nd and 3rd stage boot barriers";
+            LBT_(info) << "(2nd stage) pre_main: created \
+                           2nd and 3rd stage boot barriers";
         }
         else // Hosted.
         {

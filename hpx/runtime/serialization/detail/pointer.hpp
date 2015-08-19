@@ -81,8 +81,7 @@ namespace hpx { namespace serialization
             {
                 static Pointer call(input_archive& ar)
                 {
-                    Pointer t(new referred_type);
-                    ar >> *t;
+                    Pointer t(constructor_selector<referred_type>::create(ar));
                     return t;
                 }
             };
@@ -185,7 +184,8 @@ namespace hpx { namespace serialization
                     Pointer temp = detail::pointer_input_dispatcher<
                         Pointer>::type::call(ar);
                     register_pointer(ar, pos, ptr_helper_ptr(
-                            new detail::erase_ptr_helper<Pointer>(std::move(temp), ptr)));
+                            new detail::erase_ptr_helper<Pointer>
+                                (std::move(temp), ptr)));
                 }
                 else
                 {

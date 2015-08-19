@@ -183,7 +183,7 @@ namespace hpx { namespace util
     {
         out << name;
         if(timestamp) {
-            out << ",elapsed_time"
+            out << ",elapsed_time";
         }
     }
 
